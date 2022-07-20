@@ -16,7 +16,7 @@ DataModel::DataModel(QObject *parent) : QAbstractListModel(parent)
 
     m_sizelist = 10;
     m_modbusmanager = new modbusmanager();
-    connect(m_modbusmanager,&modbusmanager::endList,this,&DataModel::getData, Qt::UniqueConnection);
+    connect(m_modbusmanager,&modbusmanager::endList,this,&DataModel::getData);
     m_modbusmanager->connectModbus("192.168.1.10:502");
     for(int i = 0;i<m_sizelist;i++)
     {
