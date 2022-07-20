@@ -23,6 +23,7 @@ public:
     void onModbusStateCHanged( int state);
     QString RAM_US1_STATE;
     QModbusDataUnit Read_RAM_US1_STATE() const;
+ //   void read_RAM_MA_US();
     QString modbusState(){if(modbusDevice->state()==QModbusDevice::ConnectedState) return "Connected"; else return "Not Connected";};
     QModbusDataUnit RAM_MA_US();
     void readState();
@@ -31,13 +32,12 @@ public:
 
 signals:
 
-    void modbusStateChanged();
     void dataReady();
-    void connected();
+    void endList();
+    void modbusStateChanged();
 
 
 private:
-
       QModbusClient *modbusDevice = nullptr;
       void read_RAM_US_STATE();
       QModbusDataUnit RAM_US_STATE();

@@ -6,8 +6,10 @@
 #include <cstring>
 
 
+
 modbusmanager::modbusmanager(QObject *parent) : QObject(parent)
 {
+
     modbusDevice = new QModbusTcpClient(this);
     connect(modbusDevice,&QModbusClient::stateChanged,this,&modbusmanager::onModbusStateCHanged);
 
@@ -64,6 +66,20 @@ void  modbusmanager::readState()
 
 void modbusmanager::receiveData()
 {
+    const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
+    for(int i = 0;i<5;i++)
+    {
+               int index = qrand() % possibleCharacters.length();
+               QChar nextChar = possibleCharacters.at(index);
+               m_registerList.append(nextChar);
+               qDebug() << m_registerList[i];
+    }
+    emit endList();
+    qDebug() << "fin de la liste";
+
+}
+    /*
+    qDebug() << "ok";
     auto reply_RAM_US1_STATE = qobject_cast<QModbusReply *>(sender());
     if(!reply_RAM_US1_STATE)
     {
@@ -95,7 +111,7 @@ void modbusmanager::receiveData()
 
     reply_RAM_US1_STATE->deleteLater();
 }
-
+*/
 QModbusDataUnit modbusmanager::RAM_MA_US()
     {
         const auto table = static_cast<QModbusDataUnit::RegisterType>(QModbusDataUnit::HoldingRegisters);
@@ -138,7 +154,41 @@ QModbusDataUnit modbusmanager::Read_RAM_US1_STATE() const
     return QModbusDataUnit(RAM_US1_STATE,startAddress,numberOfEntries);
 }
 
+/*void modbusmanager::read_RAM_MA_US()
+{
+    auto reply_RAM_US1_STATE = qobject_cast<QModbusReply *>(sender());
+    if(!reply_RAM_US1_STATE)
+    {
+        qDebug() << "error";
+        return;
+    }
+    if(reply_RAM_US1_STATE->error() == QModbusDevice::NoError)
+    {
+        qDebug() << "reply_RAM_US1_STATE -> OK";
+        const QModbusDataUnit unit_RAM_US1_STATE = reply_RAM_US1_STATE->result();
+        for(int i = 0, total = int(unit_RAM_US1_STATE.valueCount()); i<total; i++)
+        {
+            const QString entry = tr("Address: %1, Value: %2").arg(unit_RAM_US1_STATE.startAddress()+i)
+                    .arg(QString::number(unit_RAM_US1_STATE.value(i),
+                                         unit_RAM_US1_STATE.registerType() <= QModbusDataUnit::Coils ? 10 :16));
 
+                   m_registerList.append(QString::number(unit_RAM_US1_STATE.value(i)));
+
+            }
+
+        emit dataReady();
+    }
+    else if (reply_RAM_US1_STATE->error() == QModbusDevice::ProtocolError)
+    {
+        qDebug() << "Read response error RAM_US1_STATE : " << reply_RAM_US1_STATE->errorString() << reply_RAM_US1_STATE->rawResult().exceptionCode();
+    }
+    else
+        qDebug() << "Read response error RAM_US1_STATE : " << reply_RAM_US1_STATE->errorString();
+
+    reply_RAM_US1_STATE->deleteLater();
+}
+
+*/
 
 
 

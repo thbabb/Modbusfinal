@@ -16,15 +16,11 @@ int main(int argc, char *argv[])
 
 
 #endif
-
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;
-    DataModel datamodel;
-    engine.rootContext()->setContextProperty("monModel",&datamodel);
+    qmlRegisterType<modbusmanager>("Monmanager",2,0,"Monmanager");
     qmlRegisterType<DataModel>("Datamodel",1,0,"Datamodel");
     const QUrl url(QStringLiteral("qrc:/main.qml"));
-   // QQmlContext* ctx = engine.rootContext();
-   // ctx->setContextProperty("Vchanged", &monModel);
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {
         if (!obj && url == objUrl)

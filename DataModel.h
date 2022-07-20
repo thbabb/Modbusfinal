@@ -19,7 +19,7 @@ public:
 
     DataModel(QObject *parent = 0);
     ~DataModel();
-    void getData();
+
 
     // Model Control
 
@@ -29,13 +29,17 @@ public:
 
     //
 
+private slots :
+     void getData();
+
 private :
 
     modbusmanager* m_modbusmanager;
     QList<QString> m_list;
     QList<QString> m_newlist;
-    int m_ready = 0;
+    int m_nbcall = 0;
     int m_sizelist;
+    QTimer* mReadAckTimmer;
 
 };
 

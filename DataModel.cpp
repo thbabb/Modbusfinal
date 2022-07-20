@@ -5,6 +5,7 @@
 #include <QBitArray>
 #include <QTimer>
 #include <cstring>
+#include <QThread>
 
 
 
@@ -12,10 +13,11 @@
 
 DataModel::DataModel(QObject *parent) : QAbstractListModel(parent)
 {
-    m_sizelist = 84;
+
+    m_sizelist = 10;
     m_modbusmanager = new modbusmanager();
+    connect(m_modbusmanager,&modbusmanager::endList,this,&DataModel::getData, Qt::UniqueConnection);
     m_modbusmanager->connectModbus("192.168.1.10:502");
-    connect(m_modbusmanager,&modbusmanager::dataReady,this,&DataModel::getData);
     for(int i = 0;i<m_sizelist;i++)
     {
         m_list.append("0");
@@ -25,19 +27,22 @@ DataModel::DataModel(QObject *parent) : QAbstractListModel(parent)
 
 void DataModel::getData()
 {
-    m_ready ++;
-    if(m_ready == 1)
+
+    qDebug() << "signal dataReady OK";
+    m_nbcall ++;
+    qDebug() << m_nbcall;
+    if(m_nbcall == 1)
     {
-        for(int i =0;i<m_modbusmanager->m_registerList.size();i++)
+        for(int i =0;i<m_sizelist;i++)
         {
-            m_list.append(m_modbusmanager->m_registerList[i]);
+            m_list[i] = m_modbusmanager->m_registerList[i];
         }
     }
     else
     {
-        for(int i =0;i<m_modbusmanager->m_registerList.size();i++)
+        for(int i =0;i<m_sizelist;i++)
         {
-            m_newlist.append(m_modbusmanager->m_registerList[i]);
+            m_newlist[i] = m_modbusmanager->m_registerList[i];
         }
 
     }
@@ -50,7 +55,6 @@ DataModel::~DataModel()
 
 int DataModel::rowCount(const QModelIndex& parent) const
 {
-
     if (parent.isValid())
         return 0;
     return m_list.size();

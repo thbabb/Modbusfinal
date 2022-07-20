@@ -3,6 +3,7 @@ import QtQuick.Window 2.14
 import QtQuick.Controls 2.1
 import QtQuick.Layouts 1.5
 import Datamodel 1.0
+import Monmanager 2.0
 
 
 Window {
@@ -16,6 +17,10 @@ Window {
         id : myDatamodel
 
     }
+    Monmanager{
+        id : modbus
+    }
+
 
             GridLayout{
                 id : firstlist
@@ -26,7 +31,7 @@ Window {
                     columnSpacing: 5
 
                    Repeater {
-                        model : monModel
+                        model : myDatamodel
                         height : parent.height
                         Rectangle{
                            width : textvalue.width
@@ -51,7 +56,7 @@ Window {
                     columns:3
                     columnSpacing: 5
                     Repeater {
-                        model : monModel
+                        model : myDatamodel
                         height : parent.height
                         Rectangle{
                            width : textvalue2.width
@@ -64,8 +69,17 @@ Window {
                              text: "Adress n°" + index + " = " + listB}
 
 
+
           }
         }
+               Button {
+                   id : buttonData
+                   anchors.top: mainwindow.bottom
+                   text : "DATA"
+                   onClicked:  {
+                      modbus.receiveData()
+                   }
+                    }
     }
 }
 
