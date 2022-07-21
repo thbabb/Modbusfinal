@@ -22,7 +22,7 @@ DataModel::DataModel(QObject *parent) : QAbstractListModel(parent)
 
     connect(m_modbusmanager,&modbusmanager::endList,this,&DataModel::getData);
 
-    m_modbusmanager->connectModbus("192.168.1.10:502");
+   // m_modbusmanager->connectModbus("192.168.1.10:502");
 
     for(int i = 0;i<m_sizelist;i++)
     {

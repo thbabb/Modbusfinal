@@ -31,7 +31,7 @@ public:
     //Q_INVOKABLE void receiveData();
     QList<QString> m_registerList;
     Q_INVOKABLE void rState();
-    Q_INVOKABLE void openconnect();
+    Q_INVOKABLE bool openconnect();
 
 signals:
 

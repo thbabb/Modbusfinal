@@ -19,7 +19,6 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;
     DataModel monModel;
-    monModel.m_modbusmanager;
     engine.rootContext()->setContextProperty("mModel",&monModel);
     engine.rootContext()->setContextProperty("mModbusManager",monModel.m_modbusmanager);
     const QUrl url(QStringLiteral("qrc:/main.qml"));

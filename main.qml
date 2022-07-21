@@ -113,8 +113,8 @@ Window {
                 font.pointSize: 18
                 text : "DATA"
                 onClicked:  {
-                   mModbusManager.read_RAM_MA_US()
-                   mModbusManager.rState()
+                   mModbusManager.read_RAM_MA_US();
+                   mModbusManager.rState();
                  }
                  }
             Button {
@@ -127,8 +127,29 @@ Window {
                 font.pointSize: 18
                 text : "CONNECT"
                 onClicked:  {
-                   mModbusManager.connectModbus("192.168.1.10:502");
-                 }
-                 }
+                   mModbusManager.connectModbus("192.168.1.10:502")
+            }
+            }
+
+            Rectangle{
+                id : infoconnect
+                anchors.top: firstlist.bottom
+                anchors.right : buttonConnect.left
+                anchors.topMargin: 15
+                width: layoutB.width
+                height: layoutB.height/4.7
+
+
+                Text {
+                    id: testconnect
+                    anchors.horizontalCenter: infoconnect.horizontalCenter
+                    anchors.verticalCenter: infoconnect.verticalCenter
+                    font.pointSize: 20
+                    text: "Disconnected"
+
+                }
+
+                }
+
 }
 
