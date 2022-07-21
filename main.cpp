@@ -18,8 +18,10 @@ int main(int argc, char *argv[])
 #endif
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;
-    qmlRegisterType<modbusmanager>("Monmanager",2,0,"Monmanager");
-    qmlRegisterType<DataModel>("Datamodel",1,0,"Datamodel");
+    DataModel monModel;
+    monModel.m_modbusmanager;
+    engine.rootContext()->setContextProperty("mModel",&monModel);
+    engine.rootContext()->setContextProperty("mModbusManager",monModel.m_modbusmanager);
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {

@@ -19,16 +19,19 @@ class modbusmanager : public QObject
 public:
 
     explicit modbusmanager(QObject *parent = nullptr);
-    bool connectModbus(QString serverUrl, int responseTime = 1000, int numberOfRetry = 3);
+    Q_INVOKABLE bool connectModbus(QString serverUrl, int responseTime = 1000, int numberOfRetry = 3);
     void onModbusStateCHanged( int state);
     QString RAM_US1_STATE;
     QModbusDataUnit Read_RAM_US1_STATE() const;
  //   void read_RAM_MA_US();
     QString modbusState(){if(modbusDevice->state()==QModbusDevice::ConnectedState) return "Connected"; else return "Not Connected";};
     QModbusDataUnit RAM_MA_US();
+    Q_INVOKABLE void read_RAM_MA_US();
     void readState();
-    Q_INVOKABLE void receiveData();
+    //Q_INVOKABLE void receiveData();
     QList<QString> m_registerList;
+    Q_INVOKABLE void rState();
+    Q_INVOKABLE void openconnect();
 
 signals:
 
@@ -38,6 +41,7 @@ signals:
 
 
 private:
+
       QModbusClient *modbusDevice = nullptr;
       void read_RAM_US_STATE();
       QModbusDataUnit RAM_US_STATE();

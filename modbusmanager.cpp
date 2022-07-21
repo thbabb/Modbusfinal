@@ -6,14 +6,17 @@
 #include <cstring>
 
 
-
 modbusmanager::modbusmanager(QObject *parent) : QObject(parent)
 {
-
     modbusDevice = new QModbusTcpClient(this);
     connect(modbusDevice,&QModbusClient::stateChanged,this,&modbusmanager::onModbusStateCHanged);
+    for(int i=0;i<100;i++)
+    {
+         m_registerList.append("0");
+    }
 
 }
+
 
 bool modbusmanager::connectModbus(QString serverUrl,int responseTime, int numberOfRetry)
 {
@@ -43,6 +46,7 @@ bool modbusmanager::connectModbus(QString serverUrl,int responseTime, int number
 }
 void  modbusmanager::readState()
 {
+
     if(!modbusDevice)
         return;
     // read on/off state
@@ -51,7 +55,7 @@ void  modbusmanager::readState()
     {
         if(!reply_RAM_US_STATE->isFinished())
         {
-            connect(reply_RAM_US_STATE,&QModbusReply::finished,this,&modbusmanager::dataReady);
+            connect(reply_RAM_US_STATE,&QModbusReply::finished,this,&modbusmanager::read_RAM_MA_US);
         }
         else
             delete reply_RAM_US_STATE; // broadcast replies return immediately
@@ -64,7 +68,24 @@ void  modbusmanager::readState()
 
 }
 
-void modbusmanager::receiveData()
+void modbusmanager::rState()
+{
+  if(modbusDevice->state() == QModbusDevice::ConnectedState)
+  {
+    readState();
+  }
+    else
+      return;
+}
+
+void modbusmanager::openconnect()
+{
+
+}
+
+
+
+/*void modbusmanager::receiveData()
 {
     const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
     for(int i = 0;i<5;i++)
@@ -77,8 +98,8 @@ void modbusmanager::receiveData()
     emit endList();
     qDebug() << "fin de la liste";
 
-}
-    /*
+
+
     qDebug() << "ok";
     auto reply_RAM_US1_STATE = qobject_cast<QModbusReply *>(sender());
     if(!reply_RAM_US1_STATE)
@@ -100,7 +121,7 @@ void modbusmanager::receiveData()
 
             }
 
-        emit dataReady();
+        emit endList();
     }
     else if (reply_RAM_US1_STATE->error() == QModbusDevice::ProtocolError)
     {
@@ -110,8 +131,8 @@ void modbusmanager::receiveData()
         qDebug() << "Read response error RAM_US1_STATE : " << reply_RAM_US1_STATE->errorString();
 
     reply_RAM_US1_STATE->deleteLater();
-}
-*/
+}*/
+
 QModbusDataUnit modbusmanager::RAM_MA_US()
     {
         const auto table = static_cast<QModbusDataUnit::RegisterType>(QModbusDataUnit::HoldingRegisters);
@@ -127,10 +148,12 @@ void modbusmanager::onModbusStateCHanged(int state)
     {
         qDebug() << "Disconnected event";
 
+
     }
     else if (state == QModbusDevice::ConnectedState)
     {
         qDebug() << "Connected event";
+
 
     }
 
@@ -154,12 +177,12 @@ QModbusDataUnit modbusmanager::Read_RAM_US1_STATE() const
     return QModbusDataUnit(RAM_US1_STATE,startAddress,numberOfEntries);
 }
 
-/*void modbusmanager::read_RAM_MA_US()
+void modbusmanager::read_RAM_MA_US()
 {
+
     auto reply_RAM_US1_STATE = qobject_cast<QModbusReply *>(sender());
     if(!reply_RAM_US1_STATE)
     {
-        qDebug() << "error";
         return;
     }
     if(reply_RAM_US1_STATE->error() == QModbusDevice::NoError)
@@ -172,11 +195,11 @@ QModbusDataUnit modbusmanager::Read_RAM_US1_STATE() const
                     .arg(QString::number(unit_RAM_US1_STATE.value(i),
                                          unit_RAM_US1_STATE.registerType() <= QModbusDataUnit::Coils ? 10 :16));
 
-                   m_registerList.append(QString::number(unit_RAM_US1_STATE.value(i)));
+                   m_registerList.replace(i,QString::number(unit_RAM_US1_STATE.value(i)));
 
             }
 
-        emit dataReady();
+        emit endList();
     }
     else if (reply_RAM_US1_STATE->error() == QModbusDevice::ProtocolError)
     {
@@ -188,7 +211,7 @@ QModbusDataUnit modbusmanager::Read_RAM_US1_STATE() const
     reply_RAM_US1_STATE->deleteLater();
 }
 
-*/
+
 
 
 

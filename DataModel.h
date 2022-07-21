@@ -17,9 +17,10 @@ public:
       listBRole
   };
 
+    // Constructor and Destructor
+
     DataModel(QObject *parent = 0);
     ~DataModel();
-
 
     // Model Control
 
@@ -27,19 +28,22 @@ public:
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
     QHash<int, QByteArray> roleNames() const override;
 
+    // Access of class modbusmanager to qml
+
+    modbusmanager* m_modbusmanager = nullptr;
+
     //
 
-private slots :
+public slots :
+
      void getData();
 
-private :
+private : 
 
-    modbusmanager* m_modbusmanager;
     QList<QString> m_list;
-    QList<QString> m_newlist;
+    QList<QString> m_newlist;    
     int m_nbcall = 0;
     int m_sizelist;
-    QTimer* mReadAckTimmer;
 
 };
 
