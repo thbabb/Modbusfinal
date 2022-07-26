@@ -10,72 +10,81 @@
 
 DataModel::DataModel(QObject *parent) : QAbstractListModel(parent)
 {
-    //Number of indexes to print on the QML
-
-    m_sizelist = 84;
-
     //Allocate memory for m_modbusmanager
-
     m_modbusmanager = new modbusmanager(this);
 
     //Signal : data are receive on the class modbusmanager then we can retrieve data with the function getData
 
     connect(m_modbusmanager,&modbusmanager::endList,this,&DataModel::getData);
 
-   // m_modbusmanager->connectModbus("192.168.1.10:502");
-
-    for(int i = 0;i<m_sizelist;i++)
+    // Init of the list
+    for(int i = 0;i<100;i++)
     {
         m_list.append("0");
         m_newlist.append("0");
     }
+
 }
 
 void DataModel::getData()
 {
+
     qDebug() << "signal dataReady OK";
+
+    // Number of call
+
     m_nbcall++;
+    //notify views and proxy models that a line will be inserted
+
     qDebug() << "Call n° " << m_nbcall;
+
     if(m_nbcall == 1)
     {
 
-        for(int i =0;i<m_sizelist;i++)
+        for(int i =0;i<m_modbusmanager->m_numberOfEntries;i++)
         {
 
             m_list[i] = m_modbusmanager->m_registerList[i];
-          //  qDebug() << "La listA est : " << m_list[i];
 
         }
-    }
 
+    }
     else
     {
-        for(int i =0;i<m_sizelist;i++)
+
+        for(int i =0;i<m_modbusmanager->m_numberOfEntries;i++)
         {
-
             m_newlist[i] = m_modbusmanager->m_registerList[i];
-           // qDebug() << "La listB est : " << m_newlist[i];
-
         }
 
     }
+
+    //finish insertion, notify views/models
+
+    // Update of the list and call model to say a value changed and retrieve the new value for display the new list on the qml
+
     QModelIndex topLeft = createIndex(0,0);
     QModelIndex bottomRight = createIndex( rowCount(),0);
     emit dataChanged( topLeft, bottomRight );
 
-
 }
 DataModel::~DataModel()
 {
+    // deletion of m_modbusmanager to avoid a memory leak
+
     delete m_modbusmanager;
 }
 
 
 int DataModel::rowCount(const QModelIndex& parent) const
 {
+
+    //Return the number of rows of the list
+
     if (parent.isValid())
         return 0;
-    return m_list.size();
+else
+    return m_list.size() ;
 
 }
 
@@ -102,7 +111,59 @@ QHash<int, QByteArray> DataModel::roleNames() const
 }
 
 
+void DataModel::reset()
+{
 
+    if (m_list.size()>m_modbusmanager->m_numberOfEntries)
+    {
+             beginRemoveRows(QModelIndex(), m_modbusmanager->m_numberOfEntries, 100);
+             for(int i=m_modbusmanager->m_numberOfEntries;i<100;i++)
+             {
+                m_list.removeAt(m_modbusmanager->m_numberOfEntries);
+                m_newlist.removeAt(m_modbusmanager->m_numberOfEntries);
+             }
+             endRemoveRows();
+
+    }
+    if (m_list.size()<m_modbusmanager->m_numberOfEntries)
+    {
+
+        qDebug() << m_list.size();
+        qDebug() << m_modbusmanager->m_numberOfEntries;
+
+             //for(int i=m_list.size();i< m_modbusmanager->m_numberOfEntries;i++)
+             // {
+
+                this ->insertRows(15,20,QModelIndex());
+        this -> rowCount(QModelIndex());
+        if (insertRows(15,20,QModelIndex())== true)
+        {
+            qDebug() << "good";
+        }
+        else
+        {
+            qDebug() << "error";
+        }
+
+             // }
+            qDebug() << m_list;
+
+    }
+
+}
+
+bool DataModel::insertRows ( int position, int rows, const QModelIndex &parent )
+  {
+      beginInsertRows (QModelIndex ( ) ,position,rows - 1 ) ;
+      for(int i=position;i<rows;i++)
+       {
+
+          m_list.append("0");
+          m_newlist.append("0");
+       }
+        endInsertRows();
+      return true ;
+  }
 
 
 

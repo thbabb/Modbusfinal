@@ -10,11 +10,11 @@ modbusmanager::modbusmanager(QObject *parent) : QObject(parent)
 {
     modbusDevice = new QModbusTcpClient(this);
     connect(modbusDevice,&QModbusClient::stateChanged,this,&modbusmanager::onModbusStateCHanged);
-    for(int i=0;i<100;i++)
+    m_sizelist = 100;
+    for(int i=0;i<m_sizelist;i++)
     {
          m_registerList.append("0");
     }
-
 }
 
 
@@ -79,61 +79,52 @@ void modbusmanager::rState()
   return;
 }
 
-bool modbusmanager::openconnect()
-{
-    if(modbusDevice->state() == QModbusDevice::ConnectedState)
-    {
-      return true;
-    }
-      else
-    {
-    return false;
-    }
-}
-
-QModbusDataUnit modbusmanager::RAM_MA_US()
-    {
-        const auto table = static_cast<QModbusDataUnit::RegisterType>(QModbusDataUnit::HoldingRegisters);
-
-        int startAddress = 83; // dec ? hex ?
-        quint16 numberOfEntries = 2; // 16 bits ?
-        return QModbusDataUnit(table,startAddress,numberOfEntries);
-
-    }
 void modbusmanager::onModbusStateCHanged(int state)
 {
     if (state == QModbusDevice::UnconnectedState)
     {
         qDebug() << "Disconnected event";
-
+        emit modbusStateChanged("Disconnected");
 
     }
     else if (state == QModbusDevice::ConnectedState)
     {
         qDebug() << "Connected event";
-
+        emit modbusStateChanged("Connected");
 
     }
 
-    emit modbusStateChanged();
+
 
 }
 QModbusDataUnit modbusmanager::RAM_US_STATE()
 {
     const auto table = static_cast<QModbusDataUnit::RegisterType>(QModbusDataUnit::HoldingRegisters);
-    int startAddress = 0; // dec ? hex ?
-    quint16 numberOfEntries = 84; // 16 bits ?
-    return QModbusDataUnit(table,startAddress,numberOfEntries);
+   // int startAddress = 0; // dec ? hex ?
+    //quint16 numberOfEntries = m_sizelist; // 16 bits ?
+    return QModbusDataUnit(table,m_startAddress,m_numberOfEntries);
 }
 
-QModbusDataUnit modbusmanager::Read_RAM_US1_STATE() const
+int modbusmanager::addressManag(int numberOfEntries)
+{
+    m_numberOfEntries = numberOfEntries;
+    return m_numberOfEntries;
+}
+
+int modbusmanager::startAddressManag(int startAddress)
+{
+    m_startAddress = startAddress;
+    return m_startAddress;
+}
+
+/*QModbusDataUnit modbusmanager::Read_RAM_US1_STATE() const
 {
     const auto RAM_US1_STATE = static_cast<QModbusDataUnit::RegisterType>(QModbusDataUnit::HoldingRegisters);
 
     int startAddress = 84; // dec
     quint16 numberOfEntries = 1; // 16 bits ?
     return QModbusDataUnit(RAM_US1_STATE,startAddress,numberOfEntries);
-}
+}*/
 
 void modbusmanager::read_RAM_MA_US()
 {
@@ -147,6 +138,7 @@ void modbusmanager::read_RAM_MA_US()
     {
         qDebug() << "reply_RAM_US1_STATE -> OK";
         const QModbusDataUnit unit_RAM_US1_STATE = reply_RAM_US1_STATE->result();
+
         for(int i = 0, total = int(unit_RAM_US1_STATE.valueCount()); i<total; i++)
         {
             const QString entry = tr("Address: %1, Value: %2").arg(unit_RAM_US1_STATE.startAddress()+i)
@@ -156,6 +148,7 @@ void modbusmanager::read_RAM_MA_US()
                    m_registerList.replace(i,QString::number(unit_RAM_US1_STATE.value(i)));
 
             }
+
 
         emit endList();
     }

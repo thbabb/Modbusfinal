@@ -18,6 +18,7 @@ int main(int argc, char *argv[])
 #endif
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;
+  //  QQmlContext *context = engine.rootContext();
     DataModel monModel;
     engine.rootContext()->setContextProperty("mModel",&monModel);
     engine.rootContext()->setContextProperty("mModbusManager",monModel.m_modbusmanager);

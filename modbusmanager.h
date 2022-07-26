@@ -23,28 +23,34 @@ public:
     void onModbusStateCHanged( int state);
     QString RAM_US1_STATE;
     QModbusDataUnit Read_RAM_US1_STATE() const;
- //   void read_RAM_MA_US();
+ // void read_RAM_MA_US();
     QString modbusState(){if(modbusDevice->state()==QModbusDevice::ConnectedState) return "Connected"; else return "Not Connected";};
     QModbusDataUnit RAM_MA_US();
     Q_INVOKABLE void read_RAM_MA_US();
     void readState();
-    //Q_INVOKABLE void receiveData();
     QList<QString> m_registerList;
     Q_INVOKABLE void rState();
-    Q_INVOKABLE bool openconnect();
+
+    QModbusDataUnit RAM_US_STATE();
+    Q_INVOKABLE int addressManag(int numberOfEntries);
+    Q_INVOKABLE int startAddressManag(int startAddress);
+    int m_numberOfEntries=100;
+    int m_startAddress = 0;
 
 signals:
 
     void dataReady();
     void endList();
-    void modbusStateChanged();
+    void modbusStateChanged(const QString &text);
 
 
 private:
 
+      int m_sizelist;
       QModbusClient *modbusDevice = nullptr;
       void read_RAM_US_STATE();
-      QModbusDataUnit RAM_US_STATE();
+
+
 };
 
 #endif // MODBUSMANAGER_H

@@ -2,6 +2,7 @@
 #define DATAMODEL_H
 
 #include <QAbstractListModel>
+#include <QAbstractItemModel>
 #include <QObject>
 #include <QList>
 #include <QModbusDataUnit>
@@ -15,7 +16,7 @@ public:
   enum Roles{
       listARole = Qt::UserRole,
       listBRole
-  };
+            };
 
     // Constructor and Destructor
 
@@ -27,12 +28,12 @@ public:
     int rowCount(const QModelIndex& parent = QModelIndex()) const override;
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
     QHash<int, QByteArray> roleNames() const override;
-
-    // Access of class modbusmanager to qml
+    bool insertRows ( int position, int rows, const QModelIndex &parent ) override;
+    // Access of class modbusmanager
 
     modbusmanager* m_modbusmanager = nullptr;
 
-    //
+    Q_INVOKABLE void reset();
 
 public slots :
 
@@ -43,7 +44,6 @@ private :
     QList<QString> m_list;
     QList<QString> m_newlist;    
     int m_nbcall = 0;
-    int m_sizelist;
 
 };
 
