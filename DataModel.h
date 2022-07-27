@@ -28,16 +28,16 @@ public:
     int rowCount(const QModelIndex& parent = QModelIndex()) const override;
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
     QHash<int, QByteArray> roleNames() const override;
-    bool insertRows ( int position, int rows, const QModelIndex &parent ) override;
     // Access of class modbusmanager
 
     modbusmanager* m_modbusmanager = nullptr;
-
+    bool insertRows(int row, int count, const QModelIndex &parent)override;
     Q_INVOKABLE void reset();
 
 public slots :
 
      void getData();
+
 
 private : 
 

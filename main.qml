@@ -176,6 +176,7 @@ Window {
          anchors.topMargin: 15
          width: secondList.width/2
          height: secondList.height/16
+         border.color: "black"
          color : "#E6DFDE"
 
         TextInput{
@@ -200,6 +201,7 @@ Window {
          anchors.left : infoconnect.right
          width: secondList.width/2
          height: secondList.height/16
+         border.color: "black"
          color : "#E6DFDE"
 
         TextInput{

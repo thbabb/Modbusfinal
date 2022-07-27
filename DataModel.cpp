@@ -110,6 +110,20 @@ QHash<int, QByteArray> DataModel::roleNames() const
     return names;
 }
 
+bool DataModel::insertRows(int row, int count, const QModelIndex &parent)
+{
+    beginInsertRows(parent, row, row + count - 1);
+    for(int i=m_list.size();i< m_modbusmanager->m_numberOfEntries;i++)
+     {
+
+        m_list.append("0");
+        m_newlist.append("0");
+     }
+     endInsertRows();
+     return true;
+
+}
+
 
 void DataModel::reset()
 {
@@ -130,41 +144,24 @@ void DataModel::reset()
 
         qDebug() << m_list.size();
         qDebug() << m_modbusmanager->m_numberOfEntries;
+        int index = this->m_list.count();
+        this->insertRows(10,10,QModelIndex());
 
-             //for(int i=m_list.size();i< m_modbusmanager->m_numberOfEntries;i++)
-             // {
+        emit dataChanged(this->index(index),this ->index(m_list.count()));
 
-                this ->insertRows(15,20,QModelIndex());
-        this -> rowCount(QModelIndex());
-        if (insertRows(15,20,QModelIndex())== true)
-        {
-            qDebug() << "good";
-        }
-        else
-        {
-            qDebug() << "error";
-        }
+             /*beginInsertRows(QModelIndex(),m_list.size(),m_modbusmanager->m_numberOfEntries-1);
+             for(int i=m_list.size();i< m_modbusmanager->m_numberOfEntries;i++)
+              {
 
-             // }
+                m_list.append("0");
+                m_newlist.append("0");
+              }
             qDebug() << m_list;
+             endInsertRows();*/
 
     }
 
 }
-
-bool DataModel::insertRows ( int position, int rows, const QModelIndex &parent )
-  {
-      beginInsertRows (QModelIndex ( ) ,position,rows - 1 ) ;
-      for(int i=position;i<rows;i++)
-       {
-
-          m_list.append("0");
-          m_newlist.append("0");
-       }
-        endInsertRows();
-      return true ;
-  }
-
 
 
 
