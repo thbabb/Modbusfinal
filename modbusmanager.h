@@ -32,8 +32,8 @@ public:
     Q_INVOKABLE void rState();
 
     QModbusDataUnit RAM_US_STATE();
-    Q_INVOKABLE int addressManag(int numberOfEntries);
-    Q_INVOKABLE int startAddressManag(int startAddress);
+    Q_INVOKABLE int numberofaddress(int numberOfEntries);
+    Q_INVOKABLE int startatAddress(int startAddress);
     int m_numberOfEntries=100;
     int m_startAddress = 0;
 

@@ -31,7 +31,7 @@ public:
     // Access of class modbusmanager
 
     modbusmanager* m_modbusmanager = nullptr;
-    bool insertRows(int row, int count, const QModelIndex &parent)override;
+   // bool insertRows(int row, int count, const QModelIndex &parent)override;
     Q_INVOKABLE void reset();
 
 public slots :

@@ -110,7 +110,7 @@ QHash<int, QByteArray> DataModel::roleNames() const
     return names;
 }
 
-bool DataModel::insertRows(int row, int count, const QModelIndex &parent)
+/*bool DataModel::insertRows(int row, int count, const QModelIndex &parent)
 {
     beginInsertRows(parent, row, row + count - 1);
     for(int i=m_list.size();i< m_modbusmanager->m_numberOfEntries;i++)
@@ -122,7 +122,7 @@ bool DataModel::insertRows(int row, int count, const QModelIndex &parent)
      endInsertRows();
      return true;
 
-}
+}*/
 
 
 void DataModel::reset()
@@ -144,12 +144,9 @@ void DataModel::reset()
 
         qDebug() << m_list.size();
         qDebug() << m_modbusmanager->m_numberOfEntries;
-        int index = this->m_list.count();
-        this->insertRows(10,10,QModelIndex());
+       // this->insertRows(10,10,QModelIndex());
 
-        emit dataChanged(this->index(index),this ->index(m_list.count()));
-
-             /*beginInsertRows(QModelIndex(),m_list.size(),m_modbusmanager->m_numberOfEntries-1);
+             beginInsertRows(QModelIndex(),m_list.size(),m_modbusmanager->m_numberOfEntries-1);
              for(int i=m_list.size();i< m_modbusmanager->m_numberOfEntries;i++)
               {
 
@@ -157,7 +154,7 @@ void DataModel::reset()
                 m_newlist.append("0");
               }
             qDebug() << m_list;
-             endInsertRows();*/
+             endInsertRows();
 
     }
 

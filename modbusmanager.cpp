@@ -105,13 +105,13 @@ QModbusDataUnit modbusmanager::RAM_US_STATE()
     return QModbusDataUnit(table,m_startAddress,m_numberOfEntries);
 }
 
-int modbusmanager::addressManag(int numberOfEntries)
+int modbusmanager::numberofaddress(int numberOfEntries)
 {
     m_numberOfEntries = numberOfEntries;
     return m_numberOfEntries;
 }
 
-int modbusmanager::startAddressManag(int startAddress)
+int modbusmanager::startatAddress(int startAddress)
 {
     m_startAddress = startAddress;
     return m_startAddress;

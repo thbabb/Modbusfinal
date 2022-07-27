@@ -191,7 +191,7 @@ Window {
             maximumLength: 3
             anchors.horizontalCenter:  writevalue.horizontalCenter
             onAccepted: {
-                mModbusManager.addressManag(parseInt(nbrAddress.text))
+                mModbusManager.numberofaddress(parseInt(nbrAddress.text))
             }
         }
      }
@@ -212,7 +212,7 @@ Window {
             maximumLength: 3
             anchors.horizontalCenter:  writevalue2.horizontalCenter
             onAccepted: {
-                mModbusManager.startAddressManag(parseInt(startAddress.text))
+                mModbusManager.startatAddress(parseInt(startAddress.text))
             }
         }
      }
