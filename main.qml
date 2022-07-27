@@ -1,7 +1,6 @@
 import QtQuick 2.14
 import QtQuick.Window 2.14
 import QtQuick.Controls 2.1
-import QtQuick.Layouts 1.5
 
 
 Window {
@@ -12,7 +11,7 @@ Window {
 
     Rectangle{
                 id : leftrectangle
-                width : mainwindow.width/2
+                width : mainwindow.width-rightrectangle.width
                 height: mainwindow.height/10
                 anchors.top : mainwindow.bottom
                 border.color: "black"
@@ -41,26 +40,30 @@ Window {
                       }
               }
 
-    GridLayout{
+    Grid{
                 id : firstlist
                 width: mainwindow.width/2
-                height: parent.height/1.4
+                height: mainwindow.height/1.4
                 anchors.top : rightrectangle.bottom
-                anchors.left: parent.left
-                columns:3
+                anchors.left: mainwindow.left
+                columns:4
 
                    Repeater {
                               model : mModel
 
                               Rectangle{
-                                        width : firstlist.width/8
-                                        height : firstlist.height/25
+                                        id : listrectangle
+                                        width : firstlist.width/parent.columns
+                                        height : firstlist.height/(100/parent.columns)
+                                        border.color: "black"
 
                                         Text {
                                                  id : textvalue
                                                  font.bold: true
                                                  font.pointSize: 8
                                                  horizontalAlignment: Text.horizontalCenter
+                                                 anchors.horizontalCenter: listrectangle.horizontalCenter
+                                                 anchors.verticalCenter:  listrectangle.verticalCenter
                                                  color : listA === listB ? "#000000" : "#FF0000"
                                                  text: "n° " + (index+parseInt(startAddress.text)) + " = " + listA}
 
@@ -68,25 +71,29 @@ Window {
                             }
               }
 
-     GridLayout{
+     Grid{
                  id : secondList
                  width: mainwindow.width/2
-                 height: parent.height/1.4
+                 height: mainwindow.height/1.4
                  anchors.left: firstlist.right
                  anchors.top : rightrectangle.bottom
-                 columns:3
+                 columns:4
 
                     Repeater {
                                model : mModel
 
                                Rectangle{
-                                          width : secondList.width/8
-                                          height : secondList.height/2
+                                          id : listrectangle2
+                                          width : secondList.width/parent.columns
+                                          height : secondList.height/(100/parent.columns)
+                                          border.color: "black"
 
                                           Text {
                                                  id : textvalue2
                                                  font.bold: true
                                                  font.pointSize: 8
+                                                 anchors.horizontalCenter: listrectangle2.horizontalCenter
+                                                 anchors.verticalCenter:  listrectangle2.verticalCenter
                                                  color : listA === listB ? "#008000" : "#FF0000"
                                                  horizontalAlignment: Text.horizontalCenter
                                                  text: "n° " + (index+parseInt(startAddress.text)) + " = " + listB}
@@ -99,12 +106,11 @@ Window {
                 id : buttonData
                 anchors.top: secondList.bottom
                 anchors.left : buttonConnect.right
-                anchors.topMargin: 15
                 width:  secondList.width/2
-                height: secondList.height/4
+                height: mainwindow.height-secondList.height-rightrectangle.height
                 font.pointSize: 18
                 ToolTip.visible: hovered
-                ToolTip.text: ("Click for receive data")
+                ToolTip.text: ("WARNING : CONFIRMED value for Start Address and Nb of Address BEFORE click")
                 text : "DATA"
                 palette     {
                              button: "#E6DFDE"
@@ -112,7 +118,6 @@ Window {
                 onClicked:  {
                              mModbusManager.read_RAM_MA_US();
                              mModbusManager.rState();
-
                             }
             }
 
@@ -121,8 +126,7 @@ Window {
                 anchors.left : firstlist.right
                 anchors.top : secondList.bottom
                 width:  secondList.width/2
-                height: secondList.height/4
-                anchors.topMargin: 15
+                height: mainwindow.height-secondList.height-rightrectangle.height
                 font.pointSize: 18
                 text : "CONNECT"
                 ToolTip.visible: hovered
@@ -139,16 +143,15 @@ Window {
                 id : infoconnect
                 anchors.top: firstlist.bottom
                 anchors.left : firstlist.left
-                anchors.topMargin: 15
                 width: secondList.width/2
-                height: secondList.height/4
+                height: mainwindow.height-firstlist.height-leftrectangle.height
                 color : "#E6DFDE"
 
                 Text {
                         id: testconnect
                         anchors.horizontalCenter: infoconnect.horizontalCenter
                         anchors.verticalCenter: infoconnect.verticalCenter
-                        font.pointSize: 10
+                        font.pointSize: 15
                         text:  "Disconnected"
                         color: "red"
 
@@ -173,59 +176,84 @@ Window {
          id: writevalue
          anchors.top: firstlist.bottom
          anchors.left : infoconnect.right
-         anchors.topMargin: 15
-         width: secondList.width/2
+         width: textnbaddress.width
          height: secondList.height/16
-         border.color: "black"
          color : "#E6DFDE"
+                Text {
+                         id: textnbaddress
+                         font.pointSize: 7
+                         font.bold: true
+                         anchors.horizontalCenter: writevalue.horizontalCenter
+                         anchors.verticalCenter:  writevalue.verticalCenter
+                         text: ("Nb of Address = ")
+                     }
 
-        TextInput{
-            id : nbrAddress
-            width: writevalue.width
-            height: writevalue.height
-            //  wrapMode: TextInput.Wrap
-            validator: IntValidator {
-                bottom: 1
-                top : 100
-            }
-            maximumLength: 3
-            anchors.horizontalCenter:  writevalue.horizontalCenter
-            onAccepted: {
-                mModbusManager.numberofaddress(parseInt(nbrAddress.text))
-            }
-        }
+                TextInput{
+                    id : nbrAddress
+                    anchors.left: textnbaddress.right
+                    width: buttonsetadress.width - textnbaddress.width
+                    height: writevalue.height
+                    font.pointSize: 12
+                    horizontalAlignment: TextInput.AlignHCenter
+                    verticalAlignment: TextInput.AlignVCenter
+                    color : parseInt(nbrAddress.text) > 100 || parseInt(nbrAddress.text) === 0 ? "#FF0000" : "#000000"
+                    validator: IntValidator {
+                        bottom: 1
+                        top : 100
+                    }
+                    maximumLength: 3                
+                    onEditingFinished:  {
+                        mModbusManager.numberofaddress(parseInt(nbrAddress.text));
+                    }
+                         }
      }
      Rectangle {
          id: writevalue2
          anchors.top: writevalue.bottom
          anchors.left : infoconnect.right
-         width: secondList.width/2
+         width: textstartadress.width
          height: secondList.height/16
-         border.color: "black"
          color : "#E6DFDE"
+                 Text {
+                     id: textstartadress
+                     font.pointSize: 7
+                     font.bold: true
+                     anchors.horizontalCenter: writevalue2.horizontalCenter
+                     anchors.verticalCenter:  writevalue2.verticalCenter
+                     text: ("Start Address = ")
+                 }
 
-        TextInput{
-            id : startAddress
-            width: writevalue2.width
-            height: writevalue2.height
-          //  wrapMode: TextInput.Wrap
-            maximumLength: 3
-            anchors.horizontalCenter:  writevalue2.horizontalCenter
-            onAccepted: {
-                mModbusManager.startatAddress(parseInt(startAddress.text))
-            }
-        }
+
+
+                TextInput{
+                    id : startAddress
+                    anchors.left: writevalue2.right
+                    width: buttonsetadress.width - writevalue2.width
+                    height: writevalue2.height
+                    maximumLength: 4
+                    font.pointSize: 12
+                    validator: IntValidator{
+                        bottom:0
+                        top:9999
+                    }
+
+                    horizontalAlignment: TextInput.AlignHCenter
+                    verticalAlignment: TextInput.AlignVCenter
+                    onEditingFinished:  {
+                        mModbusManager.startatAddress(parseInt(startAddress.text))
+                    }
+                         }
      }
      Button {
                 id : buttonsetadress
                 anchors.left : infoconnect.right
                 anchors.top : writevalue2.bottom
                 width:  secondList.width/2
-                height: secondList.height/10
-                font.pointSize: 18
-                text : "Enter"
+                height: mainwindow.height-firstlist.height-rightrectangle.height-startAddress.height-nbrAddress.height
+                font.pointSize: 15
+                text : "CONFIRMED"
                 ToolTip.visible: hovered
-                ToolTip.text: ("Click for connect Modbus")
+                ToolTip.text: ("Click for confirm value")
                 onClicked:  {
                               mModel.reset();
                             }

@@ -63,8 +63,9 @@ void DataModel::getData()
 
     // Update of the list and call model to say a value changed and retrieve the new value for display the new list on the qml
 
-    QModelIndex topLeft = createIndex(0,0);
-    QModelIndex bottomRight = createIndex( rowCount(),0);
+
+    QModelIndex topLeft = index(0,0);
+    QModelIndex bottomRight = index( rowCount()-1,0);
     emit dataChanged( topLeft, bottomRight );
 
 }
@@ -110,24 +111,11 @@ QHash<int, QByteArray> DataModel::roleNames() const
     return names;
 }
 
-/*bool DataModel::insertRows(int row, int count, const QModelIndex &parent)
-{
-    beginInsertRows(parent, row, row + count - 1);
-    for(int i=m_list.size();i< m_modbusmanager->m_numberOfEntries;i++)
-     {
-
-        m_list.append("0");
-        m_newlist.append("0");
-     }
-     endInsertRows();
-     return true;
-
-}*/
 
 
 void DataModel::reset()
 {
-
+    m_nbcall =0;
     if (m_list.size()>m_modbusmanager->m_numberOfEntries)
     {
              beginRemoveRows(QModelIndex(), m_modbusmanager->m_numberOfEntries, 100);
@@ -141,11 +129,6 @@ void DataModel::reset()
     }
     if (m_list.size()<m_modbusmanager->m_numberOfEntries)
     {
-
-        qDebug() << m_list.size();
-        qDebug() << m_modbusmanager->m_numberOfEntries;
-       // this->insertRows(10,10,QModelIndex());
-
              beginInsertRows(QModelIndex(),m_list.size(),m_modbusmanager->m_numberOfEntries-1);
              for(int i=m_list.size();i< m_modbusmanager->m_numberOfEntries;i++)
               {
@@ -153,9 +136,7 @@ void DataModel::reset()
                 m_list.append("0");
                 m_newlist.append("0");
               }
-            qDebug() << m_list;
              endInsertRows();
-
     }
 
 }
