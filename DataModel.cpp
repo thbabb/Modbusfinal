@@ -29,22 +29,20 @@ DataModel::DataModel(QObject *parent) : QAbstractListModel(parent)
 void DataModel::getData()
 {
 
-    qDebug() << "signal dataReady OK";
 
     // Number of call
 
     m_nbcall++;
     //notify views and proxy models that a line will be inserted
 
-    qDebug() << "Call n° " << m_nbcall;
 
     if(m_nbcall == 1)
     {
 
-        for(int i =0;i<m_modbusmanager->m_numberOfEntries;i++)
+        for(int i =0;i<m_modbusmanager->numberOfEntries;i++)
         {
 
-            m_list[i] = m_modbusmanager->m_registerList[i];
+            m_list[i] = m_modbusmanager->registerList[i];
 
         }
 
@@ -52,9 +50,9 @@ void DataModel::getData()
     else
     {
 
-        for(int i =0;i<m_modbusmanager->m_numberOfEntries;i++)
+        for(int i =0;i<m_modbusmanager->numberOfEntries;i++)
         {
-            m_newlist[i] = m_modbusmanager->m_registerList[i];
+            m_newlist[i] = m_modbusmanager->registerList[i];
         }
 
     }
@@ -116,21 +114,21 @@ QHash<int, QByteArray> DataModel::roleNames() const
 void DataModel::reset()
 {
     m_nbcall =0;
-    if (m_list.size()>m_modbusmanager->m_numberOfEntries)
+    if (m_list.size()>m_modbusmanager->numberOfEntries)
     {
-             beginRemoveRows(QModelIndex(), m_modbusmanager->m_numberOfEntries, 100);
-             for(int i=m_modbusmanager->m_numberOfEntries;i<100;i++)
+             beginRemoveRows(QModelIndex(), m_modbusmanager->numberOfEntries, 100);
+             for(int i=m_modbusmanager->numberOfEntries;i<100;i++)
              {
-                m_list.removeAt(m_modbusmanager->m_numberOfEntries);
-                m_newlist.removeAt(m_modbusmanager->m_numberOfEntries);
+                m_list.removeAt(m_modbusmanager->numberOfEntries);
+                m_newlist.removeAt(m_modbusmanager->numberOfEntries);
              }
              endRemoveRows();
 
     }
-    if (m_list.size()<m_modbusmanager->m_numberOfEntries)
+    if (m_list.size()<m_modbusmanager->numberOfEntries)
     {
-             beginInsertRows(QModelIndex(),m_list.size(),m_modbusmanager->m_numberOfEntries-1);
-             for(int i=m_list.size();i< m_modbusmanager->m_numberOfEntries;i++)
+             beginInsertRows(QModelIndex(),m_list.size(),m_modbusmanager->numberOfEntries-1);
+             for(int i=m_list.size();i< m_modbusmanager->numberOfEntries;i++)
               {
 
                 m_list.append("0");

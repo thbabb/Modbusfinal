@@ -10,10 +10,9 @@ modbusmanager::modbusmanager(QObject *parent) : QObject(parent)
 {
     modbusDevice = new QModbusTcpClient(this);
     connect(modbusDevice,&QModbusClient::stateChanged,this,&modbusmanager::onModbusStateCHanged);
-    m_sizelist = 100;
-    for(int i=0;i<m_sizelist;i++)
+    for(int i=0;i<100;i++)
     {
-         m_registerList.append("0");
+         registerList.append("0");
     }
 }
 
@@ -71,12 +70,7 @@ void  modbusmanager::readState()
 
 void modbusmanager::rState()
 {
-  if(modbusDevice->state() == QModbusDevice::ConnectedState)
-  {
     readState();
-  }
-    else
-  return;
 }
 
 void modbusmanager::onModbusStateCHanged(int state)
@@ -102,29 +96,20 @@ QModbusDataUnit modbusmanager::RAM_US_STATE()
     const auto table = static_cast<QModbusDataUnit::RegisterType>(QModbusDataUnit::HoldingRegisters);
    // int startAddress = 0; // dec ? hex ?
     //quint16 numberOfEntries = m_sizelist; // 16 bits ?
-    return QModbusDataUnit(table,m_startAddress,m_numberOfEntries);
+    return QModbusDataUnit(table,startAddress,numberOfEntries);
 }
 
-int modbusmanager::numberofaddress(int numberOfEntries)
+int modbusmanager::numberofaddress(int nbNumberOfEntries)
 {
-    m_numberOfEntries = numberOfEntries;
-    return m_numberOfEntries;
+    numberOfEntries = nbNumberOfEntries;
+    return numberOfEntries;
 }
 
-int modbusmanager::startatAddress(int startAddress)
+int modbusmanager::startatAddress(int nbOfStartAddress)
 {
-    m_startAddress = startAddress;
-    return m_startAddress;
+    startAddress = nbOfStartAddress;
+    return startAddress;
 }
-
-/*QModbusDataUnit modbusmanager::Read_RAM_US1_STATE() const
-{
-    const auto RAM_US1_STATE = static_cast<QModbusDataUnit::RegisterType>(QModbusDataUnit::HoldingRegisters);
-
-    int startAddress = 84; // dec
-    quint16 numberOfEntries = 1; // 16 bits ?
-    return QModbusDataUnit(RAM_US1_STATE,startAddress,numberOfEntries);
-}*/
 
 void modbusmanager::read_RAM_MA_US()
 {
@@ -145,7 +130,7 @@ void modbusmanager::read_RAM_MA_US()
                     .arg(QString::number(unit_RAM_US1_STATE.value(i),
                                          unit_RAM_US1_STATE.registerType() <= QModbusDataUnit::Coils ? 10 :16));
 
-                   m_registerList.replace(i,QString::number(unit_RAM_US1_STATE.value(i)));
+                   registerList.replace(i,QString::number(unit_RAM_US1_STATE.value(i)));
 
             }
 

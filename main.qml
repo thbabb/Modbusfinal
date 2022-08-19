@@ -65,7 +65,7 @@ Window {
                                                  anchors.horizontalCenter: listrectangle.horizontalCenter
                                                  anchors.verticalCenter:  listrectangle.verticalCenter
                                                  color : listA === listB ? "#000000" : "#FF0000"
-                                                 text: "n° " + (index+parseInt(startAddress.text)) + " = " + listA}
+                                                 text: "n° " + (index+Number(startAddress.text)) + " = " + listA}
 
                                        }
                             }
@@ -96,7 +96,7 @@ Window {
                                                  anchors.verticalCenter:  listrectangle2.verticalCenter
                                                  color : listA === listB ? "#008000" : "#FF0000"
                                                  horizontalAlignment: Text.horizontalCenter
-                                                 text: "n° " + (index+parseInt(startAddress.text)) + " = " + listB}
+                                                 text: "n° " + (index+Number(startAddress.text)) + " = " + listB}
 
                                         }
                              }
@@ -116,7 +116,6 @@ Window {
                              button: "#E6DFDE"
                             }
                 onClicked:  {
-                             mModbusManager.read_RAM_MA_US();
                              mModbusManager.rState();
                             }
             }
@@ -132,7 +131,9 @@ Window {
                 ToolTip.visible: hovered
                 ToolTip.text: ("Click for connect Modbus")
                 onClicked:  {
+                             
                               mModbusManager.connectModbus("192.168.1.10:502");
+                              mModbusManager.connectModbus("192.168.1.12:502");
                             }
                 palette     {
                               button: "#E6DFDE"
@@ -203,7 +204,7 @@ Window {
                     }
                     maximumLength: 3                
                     onEditingFinished:  {
-                        mModbusManager.numberofaddress(parseInt(nbrAddress.text));
+                        mModbusManager.numberofaddress(Number(nbrAddress.text));
                     }
                          }
      }
@@ -240,7 +241,7 @@ Window {
                     horizontalAlignment: TextInput.AlignHCenter
                     verticalAlignment: TextInput.AlignVCenter
                     onEditingFinished:  {
-                        mModbusManager.startatAddress(parseInt(startAddress.text))
+                        mModbusManager.startatAddress(Number(startAddress.text))
                     }
                          }
      }

@@ -36,7 +36,7 @@ public:
 public slots :
 
      void getData();
-
+//enlever les qDebug();
 
 private : 
 
