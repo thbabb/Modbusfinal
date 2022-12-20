@@ -130,7 +130,6 @@ void DataModel::reset()
              beginInsertRows(QModelIndex(),m_list.size(),m_modbusmanager->numberOfEntries-1);
              for(int i=m_list.size();i< m_modbusmanager->numberOfEntries;i++)
               {
-
                 m_list.append("0");
                 m_newlist.append("0");
               }

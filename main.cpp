@@ -18,17 +18,21 @@ int main(int argc, char *argv[])
 #endif
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;
-  //  QQmlContext *context = engine.rootContext();
+
+    //  QQmlContext *context = engine.rootContext();
     DataModel monModel;
-    engine.rootContext()->setContextProperty("mModel",&monModel);
-    engine.rootContext()->setContextProperty("mModbusManager",monModel.m_modbusmanager);
+
     const QUrl url(QStringLiteral("qrc:/main.qml"));
+
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {
         if (!obj && url == objUrl)
             QCoreApplication::exit(-1);
     }, Qt::QueuedConnection);
+    engine.rootContext()->setContextProperty("mModel",&monModel);
+    engine.rootContext()->setContextProperty("mModbusManager",monModel.m_modbusmanager);
     engine.load(url);
 
     return app.exec();
+
 }

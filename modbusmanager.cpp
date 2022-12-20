@@ -12,7 +12,7 @@ modbusmanager::modbusmanager(QObject *parent) : QObject(parent)
     connect(modbusDevice,&QModbusClient::stateChanged,this,&modbusmanager::onModbusStateCHanged);
     for(int i=0;i<100;i++)
     {
-         registerList.append("0");
+        registerList.append("0");
     }
 }
 
@@ -20,7 +20,7 @@ modbusmanager::modbusmanager(QObject *parent) : QObject(parent)
 bool modbusmanager::connectModbus(QString serverUrl,int responseTime, int numberOfRetry)
 {
     if(!modbusDevice)
-       return false;
+        return false;
     if(modbusDevice->state() != QModbusDevice::ConnectedState)
     {
         const QUrl url = QUrl::fromUserInput(serverUrl);
@@ -31,17 +31,18 @@ bool modbusmanager::connectModbus(QString serverUrl,int responseTime, int number
         modbusDevice->setNumberOfRetries(numberOfRetry);
 
         if(!modbusDevice->connectDevice())
+        {
             qDebug() << "Modbus connect fail"<< modbusDevice->errorString();
+            emit errorConnection( modbusDevice->errorString());
+        }
         else
         {
             qDebug() << "Modbus Device connected";
-
         }
     }
     else {
         modbusDevice->disconnectDevice();
         qDebug() << "Modbus device disconnected";
-        return false;
     }
 }
 void  modbusmanager::readState()
@@ -63,15 +64,13 @@ void  modbusmanager::readState()
     else
     {
         qDebug() << "Read error" << modbusDevice->errorString();
+        emit errorReadConnection(modbusDevice->errorString());
     }
+
     return;
 
 }
 
-void modbusmanager::rState()
-{
-    readState();
-}
 
 void modbusmanager::onModbusStateCHanged(int state)
 {
@@ -94,8 +93,6 @@ void modbusmanager::onModbusStateCHanged(int state)
 QModbusDataUnit modbusmanager::RAM_US_STATE()
 {
     const auto table = static_cast<QModbusDataUnit::RegisterType>(QModbusDataUnit::HoldingRegisters);
-   // int startAddress = 0; // dec ? hex ?
-    //quint16 numberOfEntries = m_sizelist; // 16 bits ?
     return QModbusDataUnit(table,startAddress,numberOfEntries);
 }
 
@@ -126,24 +123,32 @@ void modbusmanager::read_RAM_MA_US()
 
         for(int i = 0, total = int(unit_RAM_US1_STATE.valueCount()); i<total; i++)
         {
-            const QString entry = tr("Address: %1, Value: %2").arg(unit_RAM_US1_STATE.startAddress()+i)
+            /*   const QString entry = tr("Address: %1, Value: %2").arg(unit_RAM_US1_STATE.startAddress()+i)
                     .arg(QString::number(unit_RAM_US1_STATE.value(i),
-                                         unit_RAM_US1_STATE.registerType() <= QModbusDataUnit::Coils ? 10 :16));
+                                         unit_RAM_US1_STATE.registerType() <= QModbusDataUnit::Coils ? 10 :16));*/
 
-                   registerList.replace(i,QString::number(unit_RAM_US1_STATE.value(i)));
+            registerList.replace(i,QString::number(unit_RAM_US1_STATE.value(i)));
 
-            }
+        }
 
 
         emit endList();
+
     }
     else if (reply_RAM_US1_STATE->error() == QModbusDevice::ProtocolError)
     {
         qDebug() << "Read response error RAM_US1_STATE : " << reply_RAM_US1_STATE->errorString() << reply_RAM_US1_STATE->rawResult().exceptionCode();
+        if(reply_RAM_US1_STATE->rawResult().exceptionCode() == 2)
+            emit errorData(reply_RAM_US1_STATE->errorString() + reply_RAM_US1_STATE->rawResult().exceptionCode() + " --- " + "END OF ADDRESS");
+        else if (reply_RAM_US1_STATE->rawResult().exceptionCode() == 2)
+            emit errorData(reply_RAM_US1_STATE->errorString() + reply_RAM_US1_STATE->rawResult().exceptionCode() + " --- " + "Select 10 Address (ERROR for read 100 Address)");
+        emit errorData(reply_RAM_US1_STATE->errorString() + reply_RAM_US1_STATE->rawResult().exceptionCode());
     }
     else
+    {
         qDebug() << "Read response error RAM_US1_STATE : " << reply_RAM_US1_STATE->errorString();
-
+        emit errorData(reply_RAM_US1_STATE->errorString());
+    }
     reply_RAM_US1_STATE->deleteLater();
 }
 
