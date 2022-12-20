@@ -40,6 +40,7 @@ signals:
     void endList();
     void modbusStateChanged(const QString &text);
     void errorData(QString msgErrorRead);
+    void errorData2(QString msgErrorRead2);
     void errorConnection(QString msgError);
      void errorReadConnection(QString msgError);
 

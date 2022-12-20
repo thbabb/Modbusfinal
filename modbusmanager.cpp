@@ -139,10 +139,11 @@ void modbusmanager::read_RAM_MA_US()
     {
         qDebug() << "Read response error RAM_US1_STATE : " << reply_RAM_US1_STATE->errorString() << reply_RAM_US1_STATE->rawResult().exceptionCode();
         if(reply_RAM_US1_STATE->rawResult().exceptionCode() == 2)
-            emit errorData(reply_RAM_US1_STATE->errorString() + reply_RAM_US1_STATE->rawResult().exceptionCode() + " --- " + "END OF ADDRESS");
-        else if (reply_RAM_US1_STATE->rawResult().exceptionCode() == 2)
-            emit errorData(reply_RAM_US1_STATE->errorString() + reply_RAM_US1_STATE->rawResult().exceptionCode() + " --- " + "Select 10 Address (ERROR for read 100 Address)");
-        emit errorData(reply_RAM_US1_STATE->errorString() + reply_RAM_US1_STATE->rawResult().exceptionCode());
+            emit errorData(reply_RAM_US1_STATE->errorString() + " --- " + "END OF ADDRESS");
+        else if (reply_RAM_US1_STATE->rawResult().exceptionCode() == 17)
+            emit errorData2(reply_RAM_US1_STATE->errorString());
+        else
+            emit errorData(reply_RAM_US1_STATE->errorString());
     }
     else
     {

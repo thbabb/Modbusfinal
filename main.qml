@@ -129,6 +129,13 @@ Window {
         }
         Connections {
             target: mModbusManager
+            onErrorData2: {
+                showError.open()
+                textError.text = msgErrorRead2 + "Select 10 Address (ERROR for read 100 Address)"
+            }
+        }
+        Connections {
+            target: mModbusManager
             onErrorReadConnection: {
                 showErrorConnect.open()
                 textErrorConnect.text = msgError
