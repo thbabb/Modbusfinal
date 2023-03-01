@@ -1,11 +1,17 @@
 QT += quick
 QT += serialbus
-CONFIG += c++11
+QT += virtualkeyboard
+QT += qml quick
+CONFIG += c++11 link_pkgconfig static
+
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
-
+static {
+    QT += svg
+    QTPLUGIN += qtvirtualkeyboardplugin
+}
 SOURCES += \
         DataModel.cpp \
         main.cpp \
@@ -13,6 +19,7 @@ SOURCES += \
 
 RESOURCES += qml.qrc
 
+QT_VIRTUALKEYBOARD_HUNSPELL_DATA_PATH=qtbase/qtvirtualkeyboard/hunspell
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
 
